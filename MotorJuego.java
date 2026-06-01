@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class MotorJuego {
 
@@ -7,7 +6,10 @@ public class MotorJuego {
 
     private Estado estado;
     private ArrayList<EntidadVideojuego> entidades = new ArrayList<>();
+<<<<<<< HEAD
 
+=======
+>>>>>>> feature/motor-core
     private Player player;
     private SistemaLogros logros = new SistemaLogros();
 
@@ -33,7 +35,6 @@ public class MotorJuego {
 
         if (estado != Estado.JUGANDO) return;
 
-        System.out.println("\n--- UPDATE ---");
 
         for (EntidadVideojuego e : entidades) {
             if (e instanceof Enemy enemy) {
@@ -43,7 +44,11 @@ public class MotorJuego {
 
         detectarColisiones();
         limpiar();
+<<<<<<< HEAD
         logros.jugadorEnX(player.x);
+=======
+    logros.jugadorEnX(player.x);
+>>>>>>> feature/motor-core
     }
 
     private void detectarColisiones() {
@@ -68,16 +73,41 @@ public class MotorJuego {
 
     private void limpiar() {
 
-        Iterator<EntidadVideojuego> it = entidades.iterator();
+        entidades.removeIf(e -> !e.estaVivo());
+    }
 
-        while (it.hasNext()) {
-            EntidadVideojuego e = it.next();
+    // 💾 SAVE 10/10
+    public String guardarEstado() {
 
-            if (!e.estaVivo()) {
-                System.out.println("[REMOVE] " + e.getNombre());
-                it.remove();
-            }
+        return """
+        {
+          "estado": "%s",
+          "player": {
+            "x": %d,
+            "y": %d,
+            "vida": %d
+          },
+          "entidades": %d
         }
+        """.formatted(estado, player.x, player.y, player.vida, entidades.size());
+    }
+
+    // 🔄 LOAD SIMULADO
+    public void cargarEstado(String save) {
+
+        System.out.println("Cargando partida...");
+
+        if (save.contains("GAME_OVER")) {
+            estado = Estado.GAME_OVER;
+        } else {
+            estado = Estado.JUGANDO;
+        }
+
+        System.out.println("Estado cargado: " + estado);
+    }
+
+    public boolean isGameOver() {
+        return estado == Estado.GAME_OVER;
     }
 
     // 💾 QUICK SAVE
