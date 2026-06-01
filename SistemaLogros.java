@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-
 public class SistemaLogros {
 
     private ArrayList<String> logros = new ArrayList<>();
@@ -19,17 +17,10 @@ public class SistemaLogros {
         }
     }
 
-    private void desbloquear(String logro) {
-        if (!logros.contains(logro)) {
-            logros.add(logro);
-            System.out.println("🏆 LOGRO: " + logro);
-        }
-    }
-
-    public void mostrar() {
-        System.out.println("=== LOGROS ===");
-        for (String l : logros) {
-            System.out.println("- " + l);
+    private void desbloquear(String l) {
+        if (!logros.contains(l)) {
+            logros.add(l);
+            System.out.println("🏆 LOGRO: " + l);
         }
     }
 }
