@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class MotorJuego {
 
@@ -7,7 +6,6 @@ public class MotorJuego {
 
     private Estado estado;
     private ArrayList<EntidadVideojuego> entidades = new ArrayList<>();
-
     private Player player;
     private SistemaLogros logros = new SistemaLogros();
 
@@ -30,10 +28,7 @@ public class MotorJuego {
     }
 
     public void actualizar() {
-
         if (estado != Estado.JUGANDO) return;
-
-        System.out.println("\n--- UPDATE ---");
 
         for (EntidadVideojuego e : entidades) {
             if (e instanceof Enemy enemy) {
@@ -43,20 +38,18 @@ public class MotorJuego {
 
         detectarColisiones();
         limpiar();
-        logros.jugadorEnX(player.x);
+        // Actualizar posición del jugador en el sistema de logros
+        if (player != null) {
+            logros.jugadorEnX(player.x);
+        }
     }
 
     private void detectarColisiones() {
-
         for (EntidadVideojuego e : entidades) {
-
             if (e != player && player.colisionaCon(e)) {
-
                 System.out.println("[COLISION] con " + e.getNombre());
-
                 player.recibirDanio(1);
                 e.recibirDanio(2);
-
                 logros.enemigoEliminado();
 
                 if (!player.estaVivo()) {
@@ -67,26 +60,33 @@ public class MotorJuego {
     }
 
     private void limpiar() {
-
-        Iterator<EntidadVideojuego> it = entidades.iterator();
-
-        while (it.hasNext()) {
-            EntidadVideojuego e = it.next();
-
-            if (!e.estaVivo()) {
-                System.out.println("[REMOVE] " + e.getNombre());
-                it.remove();
-            }
-        }
+        entidades.removeIf(e -> !e.estaVivo());
     }
 
-    // 💾 QUICK SAVE
+    // 💾 SAVE (JSON simulado)
     public String guardarEstado() {
+        return """
+        {
+          "estado": "%s",
+          "player": {
+            "x": %d,
+            "y": %d,
+            "vida": %d
+          },
+          "entidades": %d
+        }
+        """.formatted(estado, player.x, player.y, player.vida, entidades.size());
+    }
 
-        return "{player:{x:" + player.x +
-                ",y:" + player.y +
-                ",vida:" + player.vida +
-                "},estado:" + estado + "}";
+    // 🔄 LOAD SIMULADO
+    public void cargarEstado(String save) {
+        System.out.println("Cargando partida...");
+        if (save.contains("GAME_OVER")) {
+            estado = Estado.GAME_OVER;
+        } else {
+            estado = Estado.JUGANDO;
+        }
+        System.out.println("Estado cargado: " + estado);
     }
 
     public boolean isGameOver() {
