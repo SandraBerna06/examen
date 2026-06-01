@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class SistemaLogros {
 
     private ArrayList<String> logros = new ArrayList<>();
@@ -15,6 +17,11 @@ public class SistemaLogros {
         if (x >= 5) {
             desbloquear("EXPLORADOR: X >= 5");
         }
+    }
+
+    // Compatibilidad: MotorJuego puede llamar jugadorEnX
+    public void jugadorEnX(int x) {
+        posicionJugador(x);
     }
 
     private void desbloquear(String l) {
