@@ -2,34 +2,32 @@ import java.util.ArrayList;
 
 public class SistemaLogros {
 
-    private ArrayList<String> logrosDesbloqueados = new ArrayList<>();
+    private ArrayList<String> logros = new ArrayList<>();
     private int enemigosEliminados = 0;
 
     public void enemigoEliminado() {
         enemigosEliminados++;
 
-        if (enemigosEliminados == 3) {
-            desbloquear("CAZADOR: elimina 3 enemigos");
+        if (enemigosEliminados >= 3) {
+            desbloquear("CAZADOR: 3 enemigos eliminados");
         }
     }
 
-    public void jugadorEnX(int x) {
+    public void posicionJugador(int x) {
         if (x >= 5) {
-            desbloquear("EXPLORADOR: llegar a X >= 5");
+            desbloquear("EXPLORADOR: X >= 5");
         }
     }
 
-    private void desbloquear(String logro) {
-        if (!logrosDesbloqueados.contains(logro)) {
-            logrosDesbloqueados.add(logro);
-            System.out.println("🏆 LOGRO DESBLOQUEADO: " + logro);
-        }
+    // Compatibilidad: MotorJuego puede llamar jugadorEnX
+    public void jugadorEnX(int x) {
+        posicionJugador(x);
     }
 
-    public void mostrarLogros() {
-        System.out.println("=== LOGROS ===");
-        for (String l : logrosDesbloqueados) {
-            System.out.println("- " + l);
+    private void desbloquear(String l) {
+        if (!logros.contains(l)) {
+            logros.add(l);
+            System.out.println("🏆 LOGRO: " + l);
         }
     }
 }
