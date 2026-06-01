@@ -6,34 +6,18 @@ public class MotorJuego {
     public enum Estado { MENU, JUGANDO, PAUSA, GAME_OVER }
 
     private Estado estado;
-    private ArrayList<EntidadVideojuego> entidades;
+    private ArrayList<EntidadVideojuego> entidades = new ArrayList<>();
+
     private Player player;
+    private SistemaLogros logros = new SistemaLogros();
 
     public MotorJuego() {
         estado = Estado.MENU;
-        entidades = new ArrayList<>();
     }
 
     public void iniciar() {
         estado = Estado.JUGANDO;
-        System.out.println("== JUEGO INICIADO ==");
-    }
-
-    public void pausar() {
-        estado = Estado.PAUSA;
-    }
-
-    public void reanudar() {
-        estado = Estado.JUGANDO;
-    }
-
-    public void gameOver() {
-        estado = Estado.GAME_OVER;
-        System.out.println("== GAME OVER ==");
-    }
-
-    public boolean isGameOver() {
-        return estado == Estado.GAME_OVER;
+        System.out.println("== INICIO ==");
     }
 
     public void setPlayer(Player p) {
@@ -47,14 +31,10 @@ public class MotorJuego {
 
     public void actualizar() {
 
-        if (estado != Estado.JUGANDO) {
-            System.out.println("[MOTOR] Estado: " + estado);
-            return;
-        }
+        if (estado != Estado.JUGANDO) return;
 
-        System.out.println("\n===== UPDATE =====");
+        System.out.println("\n--- UPDATE ---");
 
-        // IA / updates
         for (EntidadVideojuego e : entidades) {
             if (e instanceof Enemy enemy) {
                 enemy.update(player);
@@ -62,7 +42,8 @@ public class MotorJuego {
         }
 
         detectarColisiones();
-        limpiarMuertos();
+        limpiar();
+        logros.jugadorEnX(player.x);
     }
 
     private void detectarColisiones() {
@@ -76,14 +57,16 @@ public class MotorJuego {
                 player.recibirDanio(1);
                 e.recibirDanio(2);
 
+                logros.enemigoEliminado();
+
                 if (!player.estaVivo()) {
-                    gameOver();
+                    estado = Estado.GAME_OVER;
                 }
             }
         }
     }
 
-    private void limpiarMuertos() {
+    private void limpiar() {
 
         Iterator<EntidadVideojuego> it = entidades.iterator();
 
@@ -95,5 +78,18 @@ public class MotorJuego {
                 it.remove();
             }
         }
+    }
+
+    // 💾 QUICK SAVE
+    public String guardarEstado() {
+
+        return "{player:{x:" + player.x +
+                ",y:" + player.y +
+                ",vida:" + player.vida +
+                "},estado:" + estado + "}";
+    }
+
+    public boolean isGameOver() {
+        return estado == Estado.GAME_OVER;
     }
 }
