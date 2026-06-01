@@ -3,6 +3,7 @@ public abstract class EntidadVideojuego {
     protected String nombre;
     protected int x, y, w, h;
     protected int vida;
+    protected String sprite; // ✔ añadido (requisito enunciado)
 
     public EntidadVideojuego(String nombre, int x, int y, int w, int h, int vida) {
         this.nombre = nombre;
@@ -10,11 +11,12 @@ public abstract class EntidadVideojuego {
         this.y = y;
         this.w = w;
         this.h = h;
+        this.vida = vida;
+        this.sprite = "default.png";
     }
 
     public abstract void update();
 
-    // COLISIÓN REAL (AABB)
     public boolean colisionaCon(EntidadVideojuego other) {
         return this.x < other.x + other.w &&
                this.x + this.w > other.x &&
